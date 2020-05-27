@@ -1,7 +1,7 @@
 class Player
   attr_sprite
   attr_accessor :speed_xy, :speed_up_down, :previous_key_xy, :previous_key_up_down
-  attr_accessor :x, :y, :w, :h, :attitude, :r, :g, :b, :a, :path
+  attr_accessor :x, :y, :w, :h, :attitude, :r, :g, :b, :a, :path, :attack_for
 
   def initialize(outputs)
     @x = rand * 1260
@@ -18,6 +18,7 @@ class Player
     @previous_key_xy = nil
     @previous_key_up_down = nil
     @attitude = "run"
+    @attack_for = 0
     outputs.static_sprites << self
   end
 
@@ -63,6 +64,21 @@ class Player
     if @previous_key_up_down == "down"
       @y += @speed_up_down unless @y <= -30
     end
+  end
+
+  def decay_attack
+    @attack_for -= 1 if @attack_for > 0
+  end
+
+  def run!
+    @attitude = "run"
+    @path = "sprites/buggy.png"
+  end
+
+  def attack!
+    @attack_for = 800
+    @attitude = "attack"
+    @path = "sprites/buggy_attack.png"
   end
 
   def rect

@@ -20,7 +20,6 @@ class EnemySprite
     @rotation = [1, -1].sample
     @rotation_speed = 360
     @register_collision = 0
-    outputs.static_sprites << self
   end
 
   def serialize

@@ -13,14 +13,13 @@ class FoodieSprite
     @h = 32
     @speed_xy = 0
     @speed_up_down = 0
-    @path = 'sprites/buggy_attack.png'
+    @path = 'sprites/foodie.png'
     @previous_key_xy = nil
     @previous_key_up_down = nil
     # @weighted_keys = 10.map { KEYS.sample }
     @rotation = [1, -1].sample
     @rotation_speed = 360
     @register_collision = 0
-    outputs.static_sprites << self
   end
 
   def serialize
@@ -69,17 +68,17 @@ class FoodieSprite
     end
   end
 
-  def determine_move(args)
-    simulated_key = weighted_keys.sample
+  # def determine_move(args)
+  #   simulated_key = weighted_keys.sample
 
-    calculate_speed(simulated_key)
+  #   calculate_speed(simulated_key)
+  # end
+
+  def rect
+    [@x, @y, @w / 2, @h / 2]
   end
 
-  # def rect
-  #   [@x, @y, @w / 2, @h / 2]
-  # end
-
-  # def x_y
-  #   [@x, @y]
-  # end
+  def x_y
+    [@x, @y]
+  end
 end
