@@ -20,11 +20,16 @@ def tick(args)
     puts "i am putting some food"
     args.state.food = FoodieSprite.new(args)
     args.state.next_food += [400,1000].sample + args.tick_count
+    args.outputs.sounds << "sounds/powerup.wav"
   end
 
   if args.tick_count >= args.state.next_enemy
     args.outputs.sounds << "sounds/background.wav"
-    args.state.enemies << EnemySprite.new(args)
+    if rand < 3
+      args.state.enemies << EnemySprite.new(args.outputs)
+    else
+      args.state.enemies << SlowEnemySprite.new(args.outputs)
+    end
     args.state.next_enemy += 1000
   end
 
@@ -52,11 +57,17 @@ def tick(args)
       puts "detected food collision"
       args.state.food = false
       args.state.player.attack!
+      args.outputs.sounds << "sounds/eat_power_up.wav"
     end
   end
 
   args.state.enemies.each { |enemy| args.outputs.sprites << enemy }
-  reset(args) if player_out || player_collission
+  if player_collission && args.state.player.attitude == "attack"
+    args.state.enemies.reject! { |e| e == player_collission }
+    args.state.player.attack!
+    args.outputs.sounds << "sounds/chomp.wav"
+  end
+  reset(args) if player_out || (player_collission && args.state.player.attitude == "run")
 end
 
 def setup_game(args)
@@ -73,7 +84,14 @@ def setup_player(args)
 end
 
 def setup_enemies(args)
-  args.state.enemies ||= 2.map { EnemySprite.new(args.outputs) }
+  r = rand
+  args.state.enemies ||= 2.map do
+    if rand < 3
+      EnemySprite.new(args.outputs)
+    else
+      SlowEnemySprite.new(args.outputs)
+    end
+  end
 end
 
 def reset(args)
@@ -92,10 +110,8 @@ end
 def check_player_collission(args)
   collided = false
   args.state.enemies.each do |enemy|
-    enemy.register_collision -= 1 if enemy.register_collision > 1
     if enemy.rect.intersect_rect?(args.state.player.rect)
-      collided = true if enemy.register_collision < 1
-      enemy.register_collision = 1200
+      collided = enemy
       # puts "wrecked #{args.state.player.rect} #{enemy.rect}"
     end
   end
@@ -108,8 +124,10 @@ def check_enemy_collissions(enemies)
     next if collided_enemies.include?(enemy)
     enemies.each do |check|
       next if enemy == check
+      enemy.register_collision -= 1 if enemy.register_collision >= 1
       if enemy.rect.intersect_rect? check.rect
-        collided_enemies << check
+        collided_enemies << check if enemy.register_collision < 1
+        enemy.register_collision = 30
       end
     end
   end

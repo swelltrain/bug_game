@@ -1,4 +1,4 @@
-class EnemySprite
+class SlowEnemySprite
   attr_sprite
   attr_accessor :speed_xy, :speed_up_down, :previous_key_xy, :previous_key_up_down
   attr_accessor :x, :y, :w, :h, :angle
@@ -35,20 +35,20 @@ class EnemySprite
   end
 
   def calculate_speed(simulated_key)
-    multiplier = @near_player ? 20 : nil
+    multiplier = @near_player ? 10 : nil
     multiplier ||= @near_enemy ? 20 : nil
     multiplier ||= @near_edge ? 4 : 1
     if simulated_key == "right"
-      @speed_xy += 0.06 * multiplier unless @speed_xy > 3
+      @speed_xy += 0.06 * multiplier unless @speed_xy > 1
       @previous_key_xy = "right"
     elsif simulated_key == "left"
-      @speed_xy -= 0.06 * multiplier unless (@speed_xy * -1) > 3
+      @speed_xy -= 0.06 * multiplier unless (@speed_xy * -1) > 1
       @previous_key_xy = "left"
     elsif simulated_key == "up"
-      @speed_up_down += 0.03 * multiplier unless @speed_up_down > 3
+      @speed_up_down += 0.03 * multiplier unless @speed_up_down > 1
       @previous_key_up_down = "up"
     elsif simulated_key == "down"
-      @speed_up_down -= 0.03 * multiplier unless (@speed_up_down * -1) > 3
+      @speed_up_down -= 0.03 * multiplier unless (@speed_up_down * -1) > 1
       @previous_key_up_down = "down"
     end
 

@@ -36,16 +36,16 @@ class Player
 
   def calculate_speed(key_held)
     if key_held.right
-      @speed_xy += 0.7 unless @speed_xy > 6
+      @speed_xy += 0.7 unless @speed_xy > 4
       @previous_key_xy = "right"
     elsif key_held.left
-      @speed_xy -= 0.7 unless (@speed_xy * -1) > 6
+      @speed_xy -= 0.7 unless (@speed_xy * -1) > 4
       @previous_key_xy = "left"
     elsif key_held.up
-      @speed_up_down += 0.9 unless @speed_up_down > 6
+      @speed_up_down += 0.9 unless @speed_up_down > 4
       @previous_key_up_down = "up"
     elsif key_held.down
-      @speed_up_down -= 0.9 unless (@speed_up_down * -1) > 6
+      @speed_up_down -= 0.9 unless (@speed_up_down * -1) > 4
       @previous_key_up_down = "down"
     end
   end
