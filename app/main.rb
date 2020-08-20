@@ -47,6 +47,7 @@ def tick(args)
   poor_enemies = check_enemy_collissions(args.state.enemies)
   poor_enemies.each do |pe|
     pe.rotation *= -1
+    pe.decrement_speed_max
     args.outputs.sounds << "sounds/whup.wav"
   end
 

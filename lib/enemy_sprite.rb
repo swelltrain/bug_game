@@ -13,6 +13,8 @@ class EnemySprite
     @h = 32
     @speed_xy = 0
     @speed_up_down = 0
+    @speed_multiplier = (20..40).to_a.sample
+    @speed_max = (4..6).to_a.sample
 
     @path = 'sprites/squishy.png'
     @previous_key_xy = nil
@@ -35,21 +37,26 @@ class EnemySprite
     serialize.to_s
   end
 
+  def decrement_speed_max
+    return if @speed_max == 0
+    @speed_max -= 1
+  end
+
   def calculate_speed(simulated_key)
-    multiplier = @near_player ? 40 : nil
+    multiplier = @near_player ? @speed_multiplier : nil
     multiplier ||= @near_enemy ? 20 : nil
     multiplier ||= @near_edge ? 4 : 1
     if simulated_key == "right"
-      @speed_xy += 0.06 * multiplier unless @speed_xy > 6
+      @speed_xy += 0.06 * @speed_multiplier unless @speed_xy > @speed_max
       @previous_key_xy = "right"
     elsif simulated_key == "left"
-      @speed_xy -= 0.06 * multiplier unless (@speed_xy * -1) > 6
+      @speed_xy -= 0.06 * @speed_multiplier unless (@speed_xy * -1) > @speed_max
       @previous_key_xy = "left"
     elsif simulated_key == "up"
-      @speed_up_down += 0.03 * multiplier unless @speed_up_down > 6
+      @speed_up_down += 0.03 * @speed_multiplier unless @speed_up_down > @speed_max
       @previous_key_up_down = "up"
     elsif simulated_key == "down"
-      @speed_up_down -= 0.03 * multiplier unless (@speed_up_down * -1) > 6
+      @speed_up_down -= 0.03 * @speed_multiplier unless (@speed_up_down * -1) > @speed_max
       @previous_key_up_down = "down"
     end
 
