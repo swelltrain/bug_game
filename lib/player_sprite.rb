@@ -19,6 +19,7 @@ class Player
     @previous_key_up_down = nil
     @attitude = "run"
     @attack_for = 0
+    @mute_running_out_of_attack = false
     outputs.static_sprites << self
   end
 
@@ -78,7 +79,14 @@ class Player
   def attack!
     @attack_for = 800
     @attitude = "attack"
+    @mute_running_out_of_attack = false
     @path = "sprites/buggy_attack.png"
+  end
+
+  def running_out_of_attack?
+    return false if @mute_running_out_of_attack
+
+    @attack_for < 100 && (@mute_running_out_of_attack = true)
   end
 
   def rect

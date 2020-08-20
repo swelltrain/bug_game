@@ -11,6 +11,9 @@ def tick(args)
 
   if args.state.player.attitude == "attack"
     args.state.player.decay_attack
+    if args.state.player.running_out_of_attack?
+      args.outputs.sounds << "sounds/gasp2.wav"
+    end
     if args.state.player.decay_attack <= 0
       args.state.player.run!
     end
