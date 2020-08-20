@@ -35,7 +35,7 @@ class SlowEnemySprite
   end
 
   def calculate_speed(simulated_key)
-    multiplier = @near_player ? 10 : nil
+    multiplier = @near_player ? 20 : nil
     multiplier ||= @near_enemy ? 20 : nil
     multiplier ||= @near_edge ? 4 : 1
     if simulated_key == "right"

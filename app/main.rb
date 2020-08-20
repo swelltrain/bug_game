@@ -1,5 +1,6 @@
 require "lib/player_sprite.rb"
 require "lib/enemy_sprite.rb"
+require "lib/slow_enemy.rb"
 require "lib/foodie_sprite.rb"
 
 def tick(args)
@@ -20,7 +21,6 @@ def tick(args)
   end
 
   if args.tick_count >= args.state.next_food
-    puts "i am putting some food"
     args.state.food = FoodieSprite.new(args)
     args.state.next_food += [400,1000].sample + args.tick_count
     args.outputs.sounds << "sounds/powerup.wav"
@@ -28,7 +28,7 @@ def tick(args)
 
   if args.tick_count >= args.state.next_enemy
     args.outputs.sounds << "sounds/background.wav"
-    if rand < 3
+    if rand < 0.3
       args.state.enemies << EnemySprite.new(args.outputs)
     else
       args.state.enemies << SlowEnemySprite.new(args.outputs)
@@ -87,9 +87,8 @@ def setup_player(args)
 end
 
 def setup_enemies(args)
-  r = rand
   args.state.enemies ||= 2.map do
-    if rand < 3
+    if rand <= 0.5
       EnemySprite.new(args.outputs)
     else
       SlowEnemySprite.new(args.outputs)
