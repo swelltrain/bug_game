@@ -71,7 +71,19 @@ def tick(args)
     args.state.player.attack!
     args.outputs.sounds << "sounds/chomp.wav"
   end
-  reset(args) if player_out || (player_collission && args.state.player.attitude == "run")
+  args.outputs.solids << [0, 690, 1280, 30]
+  args.outputs.labels << {
+  x:              1200,
+  y:              715,
+  text:           args.state.player.health,
+  size_enum:      0,
+  alignment_enum: 1,
+  r:              255,
+  g:              255,
+  b:              255,
+}
+reset(args) if player_out || (player_collission && args.state.player.attitude == "run")
+
 end
 
 def setup_game(args)

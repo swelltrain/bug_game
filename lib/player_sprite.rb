@@ -1,7 +1,7 @@
 class Player
   attr_sprite
   attr_accessor :speed_xy, :speed_up_down, :previous_key_xy, :previous_key_up_down
-  attr_accessor :x, :y, :w, :h, :attitude, :r, :g, :b, :a, :path, :attack_for
+  attr_accessor :x, :y, :w, :h, :attitude, :r, :g, :b, :a, :path, :attack_for, :health
 
   def initialize(outputs)
     @x = rand * 1260
@@ -20,6 +20,7 @@ class Player
     @attitude = "run"
     @attack_for = 0
     @mute_running_out_of_attack = false
+    @health = 100
     outputs.static_sprites << self
   end
 
