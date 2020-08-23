@@ -2,7 +2,7 @@ class EnemySprite
   attr_sprite
   attr_accessor :speed_xy, :speed_up_down, :previous_key_xy, :previous_key_up_down
   attr_accessor :x, :y, :w, :h, :angle
-  attr_accessor :movement_probability, :rotation, :rotation_speed, :register_collision
+  attr_accessor :movement_probability, :rotation, :rotation_speed, :register_collision, :lunging
 
   KEYS = %w[right left up down]
 
@@ -23,6 +23,7 @@ class EnemySprite
     @rotation = [1, -1].sample
     @rotation_speed = 360
     @register_collision = 0
+    @lunging = 0
   end
 
   def serialize
@@ -47,16 +48,16 @@ class EnemySprite
     multiplier ||= @near_enemy ? 20 : nil
     multiplier ||= @near_edge ? 4 : 1
     if simulated_key == "right"
-      @speed_xy += 0.06 * @speed_multiplier unless @speed_xy > @speed_max
+      @speed_xy += 0.06 * @speed_multiplier unless @speed_xy > (@speed_max + @lunging)
       @previous_key_xy = "right"
     elsif simulated_key == "left"
-      @speed_xy -= 0.06 * @speed_multiplier unless (@speed_xy * -1) > @speed_max
+      @speed_xy -= 0.06 * @speed_multiplier unless (@speed_xy * -1) > (@speed_max + @lunging)
       @previous_key_xy = "left"
     elsif simulated_key == "up"
-      @speed_up_down += 0.03 * @speed_multiplier unless @speed_up_down > @speed_max
+      @speed_up_down += 0.03 * @speed_multiplier unless @speed_up_down > (@speed_max + @lunging)
       @previous_key_up_down = "up"
     elsif simulated_key == "down"
-      @speed_up_down -= 0.03 * @speed_multiplier unless (@speed_up_down * -1) > @speed_max
+      @speed_up_down -= 0.03 * @speed_multiplier unless (@speed_up_down * -1) > (@speed_max + @lunging)
       @previous_key_up_down = "down"
     end
 

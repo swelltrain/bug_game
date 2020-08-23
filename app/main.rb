@@ -6,9 +6,9 @@ require "lib/foodie_sprite.rb"
 def tick(args)
   args.outputs.sounds << "sounds/background.wav" if args.tick_count == 0
 
-  setup_game(args)
-
   return if args.state.reset_count >= args.tick_count
+
+  setup_game(args)
 
   if args.state.player.attitude == "attack"
     args.state.player.decay_attack
@@ -38,8 +38,10 @@ def tick(args)
 
   calculate_sprite_speeds(args)
   args.state.enemies.each do |enemy|
-    if enemy.speed_xy >= 5 || enemy.speed_up_down >= 5
-      # args.outputs.sounds << "sounds/lunge.wav"
+    if enemy.near_player?(args.state.player)
+      enemy.lunging = 3
+    else
+      enemy.lunging = 0
     end
   end
   player_collission = check_player_collission(args)
@@ -61,6 +63,7 @@ def tick(args)
       puts "detected food collision"
       args.state.food = false
       args.state.player.attack!
+      args.state.player.increment_health(10)
       args.outputs.sounds << "sounds/eat_power_up.wav"
     end
   end
@@ -70,13 +73,15 @@ def tick(args)
     args.state.enemies.reject! { |e| e == player_collission }
 
     args.state.player.attack!
+    args.state.player.increment_health(20)
+
     args.outputs.sounds << "sounds/chomp.wav"
   end
   args.outputs.solids << [0, 690, 1280, 30]
   args.outputs.labels << {
     x:              1200,
     y:              715,
-    text:           args.state.player.health,
+    text:           "Health: #{args.state.player.health}",
     size_enum:      0,
     alignment_enum: 1,
     r:              255,
@@ -86,9 +91,11 @@ def tick(args)
   if (player_collission && args.state.player.attitude == "run")
     args.state.enemies.reject! { |e| e == player_collission }
     args.outputs.sounds << "sounds/glass_break.wav"
-    args.state.player.speed_xy *= -1
-    args.state.player.speed_up_down *= -1
-    
+
+    args.state.player.speed_xy += player_collission.speed_xy - 2
+    args.state.player.speed_up_down += player_collission.speed_up_down - 2
+
+
     args.state.player.decrement_health(30)
   end
 
@@ -126,9 +133,8 @@ def reset(args)
   args.state.food = nil
   args.state.next_food = nil
   screams = %w[scream1.wav]
-  # args.outputs.sounds << "sounds/#{screams.sample}"
-
-  args.state.reset_count = args.tick_count + 100
+  args.outputs.sounds << "sounds/#{screams.sample}"
+  args.state.reset_count = args.tick_count + 180
   args.state.next_enemy = args.tick_count + 1000
 end
 

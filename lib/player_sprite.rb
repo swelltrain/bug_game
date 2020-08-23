@@ -73,6 +73,11 @@ class Player
     @health = 0 if @health < 0
   end
 
+  def increment_health(amount)
+    @health += amount
+    @health = 100 if @health > 100
+  end
+
   def decay_attack
     @attack_for -= 1 if @attack_for > 0
   end
