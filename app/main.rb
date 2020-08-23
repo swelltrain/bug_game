@@ -64,6 +64,7 @@ def tick(args)
       args.state.food = false
       args.state.player.attack!
       args.state.player.increment_health(10)
+      args.state.score += 50
       args.outputs.sounds << "sounds/eat_power_up.wav"
     end
   end
@@ -74,14 +75,15 @@ def tick(args)
 
     args.state.player.attack!
     args.state.player.increment_health(20)
-
+    args.state.score += args.state.player.health
     args.outputs.sounds << "sounds/chomp.wav"
   end
   args.outputs.solids << [0, 690, 1280, 30]
+
   args.outputs.labels << {
-    x:              1200,
+    x:              1000,
     y:              715,
-    text:           "Health: #{args.state.player.health}",
+    text:           "High Score: #{args.state.high_score} | Score: #{args.state.score} | Health: #{args.state.player.health}",
     size_enum:      0,
     alignment_enum: 1,
     r:              255,
@@ -92,8 +94,8 @@ def tick(args)
     args.state.enemies.reject! { |e| e == player_collission }
     args.outputs.sounds << "sounds/glass_break.wav"
 
-    args.state.player.speed_xy += player_collission.speed_xy - 2
-    args.state.player.speed_up_down += player_collission.speed_up_down - 2
+    args.state.player.speed_xy += player_collission.speed_xy - 3
+    args.state.player.speed_up_down += player_collission.speed_up_down - 3
 
 
     args.state.player.decrement_health(30)
@@ -108,6 +110,8 @@ def setup_game(args)
   args.state.next_enemy ||= 1000
   args.state.next_food ||= 400
   args.state.food ||= false
+  args.state.score ||= 0
+  args.state.high_score ||= 0
   setup_player(args)
   setup_enemies(args)
 end
@@ -134,6 +138,8 @@ def reset(args)
   args.state.next_food = nil
   screams = %w[scream1.wav]
   args.outputs.sounds << "sounds/#{screams.sample}"
+  args.state.high_score = args.state.score if args.state.score > args.state.high_score
+  args.state.score = 0
   args.state.reset_count = args.tick_count + 180
   args.state.next_enemy = args.tick_count + 1000
 end
