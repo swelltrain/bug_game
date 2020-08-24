@@ -94,8 +94,8 @@ def tick(args)
     args.state.enemies.reject! { |e| e == player_collission }
     args.outputs.sounds << "sounds/glass_break.wav"
 
-    args.state.player.speed_xy += player_collission.speed_xy - 3
-    args.state.player.speed_up_down += player_collission.speed_up_down - 3
+    args.state.player.speed_xy = player_collission.speed_xy - 3
+    args.state.player.speed_up_down = player_collission.speed_up_down - 3
 
 
     args.state.player.decrement_health(30)

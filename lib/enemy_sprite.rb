@@ -16,7 +16,7 @@ class EnemySprite
     @speed_multiplier = (20..40).to_a.sample
     @speed_max = (4..6).to_a.sample
 
-    @path = 'sprites/squishy.png'
+    @path = 'sprites/faster.png'
     @previous_key_xy = nil
     @previous_key_up_down = nil
     @weighted_keys = 10.map { KEYS.sample }
