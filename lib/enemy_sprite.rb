@@ -43,6 +43,13 @@ class EnemySprite
     @speed_max -= 1
   end
 
+  def set_angle(tick_count, player)
+    _y = player.y - @y
+    _x = player.x - @x
+    _angle = Math.atan2(_y,_x)
+    self.angle = _angle * (180/Math::PI)
+  end
+
   def calculate_speed(simulated_key)
     multiplier = @near_player ? @speed_multiplier : nil
     multiplier ||= @near_enemy ? 20 : nil

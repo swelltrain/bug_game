@@ -187,6 +187,6 @@ def move_sprites(args)
   args.state.player.move!
   args.state.enemies.each do |enemy|
     enemy.move!
-    enemy.angle = (args.state.tick_count % enemy.rotation_speed) * enemy.rotation
+    enemy.set_angle(args.state.tick_count, args.state.player)
   end
 end

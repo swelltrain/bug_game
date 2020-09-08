@@ -43,6 +43,10 @@ class SlowEnemySprite
     @speed_max -= 1
   end
 
+  def set_angle(tick_count, player)
+    self.angle = (tick_count % rotation_speed) * rotation
+  end
+
   def calculate_speed(simulated_key)
     multiplier = @near_player ? @speed_multiplier : nil
     multiplier ||= @near_enemy ? 20 : nil
