@@ -2,7 +2,7 @@ class EnemySprite
   attr_sprite
   attr_accessor :speed_xy, :speed_up_down, :previous_key_xy, :previous_key_up_down
   attr_accessor :x, :y, :w, :h, :angle
-  attr_accessor :movement_probability, :rotation, :rotation_speed, :register_collision, :lunging
+  attr_accessor :movement_probability, :rotation, :rotation_speed, :register_collision, :lunging, :injured
 
   KEYS = %w[right left up down]
 
@@ -13,7 +13,7 @@ class EnemySprite
     @h = 32
     @speed_xy = 0
     @speed_up_down = 0
-    @speed_multiplier = (20..40).to_a.sample
+    @speed_multiplier = (20..30).to_a.sample
     @speed_max = (4..6).to_a.sample
 
     @path = ['sprites/faster.png', 'sprites/fast.png'].sample
@@ -52,7 +52,7 @@ class EnemySprite
 
   def calculate_speed(simulated_key)
     multiplier = @near_player ? @speed_multiplier : nil
-    multiplier ||= @near_enemy ? 20 : nil
+    multiplier ||= @near_enemy ? 15 : nil
     multiplier ||= @near_edge ? 4 : 1
     if simulated_key == "right"
       @speed_xy += 0.06 * @speed_multiplier unless @speed_xy > (@speed_max + @lunging)
@@ -131,7 +131,7 @@ class EnemySprite
     else
       closest = distances.values.map(&:abs).sort.first
     end
-    @near_player = true
+    @near_player = true unless @injured
     nearby = distances.detect { |_k,v| v == closest }[0]
     @weighted_keys = 10.map { KEYS.sample }
     if nearby == "x"
