@@ -39,7 +39,7 @@ def tick(args)
   calculate_sprite_speeds(args)
   args.state.enemies.each do |enemy|
     if enemy.near_player?(args.state.player)
-      enemy.lunging = 3
+      enemy.lunging = 2
     else
       enemy.lunging = 0
     end
