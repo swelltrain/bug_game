@@ -14,7 +14,7 @@ class SlowEnemySprite
     @speed_xy = 0
     @speed_up_down = 0
     @speed_multiplier = (5..20).to_a.sample
-    @speed_max = (1..4).to_a.sample
+    @speed_max = [1,2.2, 2.5, 2.5, 2.9 ,3,3.2].sample * [0.1, 0.3, 0.6, 1].sample
 
     @path = 'sprites/squishy.png'
     @previous_key_xy = nil
@@ -24,6 +24,8 @@ class SlowEnemySprite
     @rotation_speed = 360
     @register_collision = 0
     @lunging = 0
+
+    puts "speed max #{@speed_max}"
   end
 
   def serialize
@@ -49,19 +51,19 @@ class SlowEnemySprite
 
   def calculate_speed(simulated_key)
     multiplier = @near_player ? @speed_multiplier : nil
-    multiplier ||= @near_enemy ? 10 : nil
+    multiplier ||= @near_enemy ? 7 : nil
     multiplier ||= @near_edge ? 4 : 1
     if simulated_key == "right"
-      @speed_xy += 0.06 * @speed_multiplier unless @speed_xy > (@speed_max + @lunging)
+      @speed_xy += 0.06 * multiplier unless @speed_xy > (@speed_max + @lunging)
       @previous_key_xy = "right"
     elsif simulated_key == "left"
-      @speed_xy -= 0.06 * @speed_multiplier unless (@speed_xy * -1) > (@speed_max + @lunging)
+      @speed_xy -= 0.06 * multiplier unless (@speed_xy * -1) > (@speed_max + @lunging)
       @previous_key_xy = "left"
     elsif simulated_key == "up"
-      @speed_up_down += 0.03 * @speed_multiplier unless @speed_up_down > (@speed_max + @lunging)
+      @speed_up_down += 0.03 * multiplier unless @speed_up_down > (@speed_max + @lunging)
       @previous_key_up_down = "up"
     elsif simulated_key == "down"
-      @speed_up_down -= 0.03 * @speed_multiplier unless (@speed_up_down * -1) > (@speed_max + @lunging)
+      @speed_up_down -= 0.03 * multiplier unless (@speed_up_down * -1) > (@speed_max + @lunging)
       @previous_key_up_down = "down"
     end
 

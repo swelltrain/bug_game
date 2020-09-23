@@ -14,7 +14,7 @@ class EnemySprite
     @speed_xy = 0
     @speed_up_down = 0
     @speed_multiplier = (20..30).to_a.sample
-    @speed_max = (4..6).to_a.sample
+    @speed_max = [2, 2.7, 2.9, 3.1,3.1, 3.1, 3.2, 3.5, 3.7, 3.9,4].sample * [0.1, 0.3, 0.9, 1.0,1.0,1.0,1.0,1.0, 2].sample
 
     @path = ['sprites/faster.png', 'sprites/fast.png'].sample
     @previous_key_xy = nil
@@ -52,19 +52,19 @@ class EnemySprite
 
   def calculate_speed(simulated_key)
     multiplier = @near_player ? @speed_multiplier : nil
-    multiplier ||= @near_enemy ? 15 : nil
+    multiplier ||= @near_enemy ? 12 : nil
     multiplier ||= @near_edge ? 4 : 1
     if simulated_key == "right"
-      @speed_xy += 0.06 * @speed_multiplier unless @speed_xy > (@speed_max + @lunging)
+      @speed_xy += 0.06 * multiplier unless @speed_xy > (@speed_max + @lunging)
       @previous_key_xy = "right"
     elsif simulated_key == "left"
-      @speed_xy -= 0.06 * @speed_multiplier unless (@speed_xy * -1) > (@speed_max + @lunging)
+      @speed_xy -= 0.06 * multiplier unless (@speed_xy * -1) > (@speed_max + @lunging)
       @previous_key_xy = "left"
     elsif simulated_key == "up"
-      @speed_up_down += 0.03 * @speed_multiplier unless @speed_up_down > (@speed_max + @lunging)
+      @speed_up_down += 0.03 * multiplier unless @speed_up_down > (@speed_max + @lunging)
       @previous_key_up_down = "up"
     elsif simulated_key == "down"
-      @speed_up_down -= 0.03 * @speed_multiplier unless (@speed_up_down * -1) > (@speed_max + @lunging)
+      @speed_up_down -= 0.03 * multiplier unless (@speed_up_down * -1) > (@speed_max + @lunging)
       @previous_key_up_down = "down"
     end
 
