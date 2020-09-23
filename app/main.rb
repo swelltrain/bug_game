@@ -28,7 +28,7 @@ def tick(args)
 
   if args.tick_count >= args.state.next_enemy
     args.outputs.sounds << "sounds/background.wav"
-    if rand < 0.3
+    if rand < 0.2
       args.state.enemies << EnemySprite.new(args.outputs)
     else
       args.state.enemies << SlowEnemySprite.new(args.outputs)
@@ -94,8 +94,9 @@ def tick(args)
     args.state.enemies.reject! { |e| e == player_collission }
     args.outputs.sounds << "sounds/glass_break.wav"
 
-    args.state.player.speed_xy = player_collission.speed_xy - 3
-    args.state.player.speed_up_down = player_collission.speed_up_down - 3
+
+    args.state.player.speed_xy = (player_collission.speed_xy / 2)
+    args.state.player.speed_up_down = (player_collission.speed_up_down / 2)
 
 
     args.state.player.decrement_health(30)
