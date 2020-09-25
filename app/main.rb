@@ -1,3 +1,4 @@
+require "lib/base_enemy_sprite.rb"
 require "lib/player_sprite.rb"
 require "lib/enemy_sprite.rb"
 require "lib/slow_enemy.rb"
