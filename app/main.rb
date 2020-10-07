@@ -2,6 +2,7 @@ require "lib/player_sprite.rb"
 require "lib/enemy_sprite.rb"
 require "lib/slow_enemy.rb"
 require "lib/foodie_sprite.rb"
+require "lib/chasing_enemy_sprite.rb"
 
 def tick(args)
   args.outputs.sounds << "sounds/background.wav" if args.tick_count == 0
@@ -23,17 +24,20 @@ def tick(args)
   if args.tick_count >= args.state.next_food
     args.state.food = FoodieSprite.new(args)
     args.state.next_food += [400,1000].sample + args.tick_count
+    # args.state.next_food += [400,1000].sample + args.tick_count
     args.outputs.sounds << "sounds/powerup.wav"
   end
 
   if args.tick_count >= args.state.next_enemy
-    args.outputs.sounds << "sounds/background.wav"
+    # args.outputs.sounds << "sounds/background.wav"
     if rand < 0.2
+      args.state.enemies << ChasingEnemySprite.new(args.outputs)
+    elsif rand <= 0.5
       args.state.enemies << EnemySprite.new(args.outputs)
     else
       args.state.enemies << SlowEnemySprite.new(args.outputs)
     end
-    args.state.next_enemy += 1000
+    args.state.next_enemy += [400,1000].sample
   end
 
   calculate_sprite_speeds(args)
@@ -124,7 +128,9 @@ end
 
 def setup_enemies(args)
   args.state.enemies ||= 4.map do
-    if rand <= 0.5
+    if rand <= 0.1
+      ChasingEnemySprite.new(args.outputs)
+    elsif rand <= 0.5
       EnemySprite.new(args.outputs)
     else
       SlowEnemySprite.new(args.outputs)
@@ -174,8 +180,8 @@ def check_enemy_collissions(enemies)
 end
 
 def check_bounds(args)
-  args.state.player.x >= 1190 || args.state.player.x <= -20 ||
-  args.state.player.y >= 700 || args.state.player.y <= 0
+  args.state.player.x >= 1300 || args.state.player.x <= -20 ||
+  args.state.player.y >= 740 || args.state.player.y <= -20
 end
 
 def calculate_sprite_speeds(args)

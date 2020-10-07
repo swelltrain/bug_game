@@ -4,8 +4,8 @@ class Player
   attr_accessor :x, :y, :w, :h, :attitude, :r, :g, :b, :a, :path, :attack_for, :health
 
   def initialize(outputs)
-    @x = rand * 1260
-    @y = (rand * 200)
+    @x = [100,300,500,700,900,1100].sample
+    @y = [100,200,300,400,500,600].sample
     @w = 32 # size
     @h = 32
     # @r = 255
@@ -54,17 +54,17 @@ class Player
 
   def move!
     if @previous_key_xy == "right"
-      @x += @speed_xy unless @x >= 1200
+      @x += @speed_xy #unless @x >= 1200
     end
     if @previous_key_xy == "left"
-      @x += @speed_xy unless @x <= -30
+      @x += @speed_xy #unless @x <= -30
     end
 
     if @previous_key_up_down == "up"
-      @y += @speed_up_down unless @y >= 720
+      @y += @speed_up_down #unless @y >= 720
     end
     if @previous_key_up_down == "down"
-      @y += @speed_up_down unless @y <= -30
+      @y += @speed_up_down #unless @y <= -30
     end
   end
 

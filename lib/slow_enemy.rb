@@ -4,11 +4,13 @@ class SlowEnemySprite
   attr_accessor :x, :y, :w, :h, :angle
   attr_accessor :movement_probability, :rotation, :rotation_speed, :register_collision, :lunging, :injured
 
-  KEYS = %w[right left up down]
+  KEYS = %w[right left up down].freeze
+  STARTING_X = [-240, -200, -180, -120, 1700, 1740, 1780, 1820].freeze
+  STARTING_Y = [-240, -200, -180, -120, 900, 940, 980, 1020].freeze
 
   def initialize(outputs)
-    @x = rand * 1260
-    @y = (rand * 200) + 500
+    @x = STARTING_X.sample
+    @y = STARTING_Y.sample
     @w = 32 # size
     @h = 32
     @speed_xy = 0

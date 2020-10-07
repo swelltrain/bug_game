@@ -1,4 +1,4 @@
-class EnemySprite
+class ChasingEnemySprite
   attr_sprite
   attr_accessor :speed_xy, :speed_up_down, :previous_key_xy, :previous_key_up_down
   attr_accessor :x, :y, :w, :h, :angle
@@ -18,7 +18,7 @@ class EnemySprite
     @speed_multiplier = (20..30).to_a.sample
     @speed_max = [2, 2.7, 2.9, 3.1,3.1, 3.1, 3.2, 3.5, 3.7, 3.9,4].sample * [0.1, 0.3, 0.9, 1.0,1.0,1.0,1.0,1.0, 2].sample
 
-    @path = ['sprites/fast.png'].sample
+    @path = ['sprites/faster.png'].sample
     @previous_key_xy = nil
     @previous_key_up_down = nil
     @weighted_keys = 10.map { KEYS.sample }
@@ -53,9 +53,7 @@ class EnemySprite
   end
 
   def calculate_speed(simulated_key)
-    multiplier = @near_player ? @speed_multiplier : nil
-    multiplier ||= @near_enemy ? 12 : nil
-    multiplier ||= @near_edge ? 4 : 1
+    multiplier =  @speed_multiplier
     if simulated_key == "right"
       @speed_xy += 0.06 * multiplier unless @speed_xy > (@speed_max + @lunging)
       @previous_key_xy = "right"
@@ -91,8 +89,6 @@ class EnemySprite
   def determine_move(args)
     simulated_key = near_edge?
     simulated_key ||= near_player?(args.state.player)
-    simulated_key ||= near_enemy?(closest_other_entity(args.state.enemies))
-    simulated_key ||= weighted_keys.sample
 
     calculate_speed(simulated_key)
     updated_weighted_keys(simulated_key) unless near_edge?
@@ -127,14 +123,18 @@ class EnemySprite
     }
     close = 0
     distances.values.map(&:abs).each { |v| close += v }
-    return nil unless close < 200
+    # return nil unless close < 200
     if entity.attitude == "run"
       closest = distances.values.map(&:abs).sort.last
     else
       closest = distances.values.map(&:abs).sort.first
     end
     @near_player = true unless @injured
-    nearby = distances.detect { |_k,v| v == closest }[0]
+    if entity.attitude == "run"
+      nearby = distances.keys.sample
+    else
+      nearby = distances.detect { |_k,v| v == closest }[0]
+    end
     @weighted_keys = 10.map { KEYS.sample }
     if nearby == "x"
       if entity.attitude == "run"

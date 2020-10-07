@@ -7,8 +7,8 @@ class FoodieSprite
   # KEYS = %w[right left up down]
 
   def initialize(outputs)
-    @x = rand * 300
-    @y = (rand * 200) + 200
+    @x = [100,300,500,700,900,1100].sample
+    @y = [100,200,300,400,500,600].sample
     @w = 32 # size
     @h = 32
     @speed_xy = 0
