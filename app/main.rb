@@ -24,21 +24,23 @@ def tick(args)
 
   if args.tick_count >= args.state.next_food
     args.state.food = FoodieSprite.new(args)
-    args.state.next_food += [200,400,600].sample
+    args.state.next_food += [400,600,800,1200].sample
     # args.state.next_food += [400,1000].sample + args.tick_count
     args.outputs.sounds << "sounds/powerup.wav"
   end
 
-  if args.tick_count >= args.state.next_enemy
+  if args.tick_count >= args.state.next_enemy && args.state.total_enemies < 30
     # args.outputs.sounds << "sounds/background.wav"
     if rand < 0.2
       args.state.enemies << ChasingEnemySprite.new(args.outputs)
-    elsif rand <= 0.5
+    elsif rand <= 0.3
       args.state.enemies << EnemySprite.new(args.outputs)
     else
       args.state.enemies << SlowEnemySprite.new(args.outputs)
     end
     args.state.next_enemy += [0,100,100,100,200,300,500,800].sample
+    args.state.total_enemies += 1
+    # args.outputs.sounds << "sounds/background.wav"
   end
 
   calculate_sprite_speeds(args)
@@ -66,7 +68,6 @@ def tick(args)
 
   if args.state.food
     if args.state.player.rect.intersect_rect?(args.state.food.rect)
-      puts "detected food collision"
       args.state.food = false
       args.state.player.attack!
       args.state.player.increment_health(10)
@@ -80,8 +81,9 @@ def tick(args)
     args.state.enemies.reject! { |e| e == player_collission }
 
     args.state.player.attack!
-    args.state.player.increment_health(20)
+    args.state.player.increment_health(5)
     args.state.score += args.state.player.health
+    args.state.total_enemies -= 1
     args.outputs.sounds << "sounds/chomp.wav"
   end
   args.outputs.solids << [0, 690, 1280, 30]
@@ -97,15 +99,16 @@ def tick(args)
     b:              255,
   }
   if (player_collission && args.state.player.attitude == "run")
+    initial = args.state.enemies.count
     args.state.enemies.reject! { |e| e == player_collission }
     args.outputs.sounds << "sounds/glass_break.wav"
+    args.state.total_enemies -= (initial - args.state.enemies.count)
 
 
     args.state.player.speed_xy = (player_collission.speed_xy / 2)
     args.state.player.speed_up_down = (player_collission.speed_up_down / 2)
 
-
-    args.state.player.decrement_health(30)
+    args.state.player.decrement_health(10)
   end
 
   reset(args) if player_out || args.state.player.health == 0
@@ -118,6 +121,7 @@ def setup_game(args)
   args.state.next_food ||= 400
   args.state.food ||= false
   args.state.score ||= 0
+  args.state.total_enemies ||= 20
   args.state.high_score ||= 0
   setup_player(args)
   setup_enemies(args)
@@ -128,10 +132,10 @@ def setup_player(args)
 end
 
 def setup_enemies(args)
-  args.state.enemies ||= 4.map do
-    if rand <= 0.1
+  args.state.enemies ||= args.state.total_enemies.map do
+    if rand <= 0.025
       ChasingEnemySprite.new(args.outputs)
-    elsif rand <= 0.5
+    elsif rand <= 0.1
       EnemySprite.new(args.outputs)
     else
       SlowEnemySprite.new(args.outputs)
@@ -144,6 +148,7 @@ def reset(args)
   args.state.player = nil
   args.state.enemies = nil
   args.state.food = nil
+  args.state.total_enemies = 20
   # args.state.next_food = nil
   screams = %w[scream1.wav]
   args.outputs.sounds << "sounds/#{screams.sample}"
@@ -168,6 +173,9 @@ def check_enemy_collissions(enemies)
   collided_enemies = []
   enemies.each do |enemy|
     next if collided_enemies.include?(enemy)
+    next if enemy.x < 0 || enemy.x > 1280
+    next if enemy.y < 0 || enemy.y > 760
+
     enemies.each do |check|
       next if enemy == check
       enemy.register_collision -= 1 if enemy.register_collision >= 1

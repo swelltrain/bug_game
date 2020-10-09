@@ -40,7 +40,7 @@ class BaseEnemySprite
   def decrement_speed_max
     return if @speed_max == 0
 
-    @speed_max -= 1
+    @speed_max -= 0.25
   end
 
 

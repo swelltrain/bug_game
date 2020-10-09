@@ -12,11 +12,12 @@ class Player
     # @g = 0
     # @b = 0
     @a = 255
-    @speed_xy = 0
-    @speed_up_down = 0
+
+    @previous_key_xy = ["left", "right"].sample
+    @previous_key_up_down = ["up", "down"].sample
+    @speed_xy = 1
+    @speed_up_down = 1
     @path = 'sprites/buggy.png'
-    @previous_key_xy = nil
-    @previous_key_up_down = nil
     @attitude = "run"
     @attack_for = 0
     @mute_running_out_of_attack = false
@@ -38,10 +39,10 @@ class Player
 
   def calculate_speed(key_held)
     if key_held.right
-      @speed_xy += 0.7 unless @speed_xy > 4
+      @speed_xy += 0.7 unless @speed_xy > 6
       @previous_key_xy = "right"
     elsif key_held.left
-      @speed_xy -= 0.7 unless (@speed_xy * -1) > 4
+      @speed_xy -= 0.7 unless (@speed_xy * -1) > 6
       @previous_key_xy = "left"
     elsif key_held.up
       @speed_up_down += 0.9 unless @speed_up_down > 4
