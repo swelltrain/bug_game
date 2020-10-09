@@ -24,7 +24,7 @@ def tick(args)
 
   if args.tick_count >= args.state.next_food
     args.state.food = FoodieSprite.new(args)
-    args.state.next_food += [400,1000].sample + args.tick_count
+    args.state.next_food += [200,400,600].sample
     # args.state.next_food += [400,1000].sample + args.tick_count
     args.outputs.sounds << "sounds/powerup.wav"
   end
@@ -38,7 +38,7 @@ def tick(args)
     else
       args.state.enemies << SlowEnemySprite.new(args.outputs)
     end
-    args.state.next_enemy += [400,1000].sample
+    args.state.next_enemy += [0,100,100,100,200,300,500,800].sample
   end
 
   calculate_sprite_speeds(args)
@@ -144,7 +144,7 @@ def reset(args)
   args.state.player = nil
   args.state.enemies = nil
   args.state.food = nil
-  args.state.next_food = nil
+  # args.state.next_food = nil
   screams = %w[scream1.wav]
   args.outputs.sounds << "sounds/#{screams.sample}"
   args.state.high_score = args.state.score if args.state.score > args.state.high_score

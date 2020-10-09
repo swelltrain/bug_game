@@ -18,14 +18,20 @@ class EnemySprite < BaseEnemySprite
     @rotation_speed = 360
     @register_collision = 0
     @lunging = 0
+    @avoidence_circle = [20, 40, 80, 200].sample
+    @lunging_circle = [80, 200, 300].sample
   end
 
 
   def set_angle(tick_count, player)
-    _y = player.y - @y
-    _x = player.x - @x
-    _angle = Math.atan2(_y,_x)
-    self.angle = _angle * (180/Math::PI)
+    if lunging > 0
+      _y = player.y - @y
+      _x = player.x - @x
+      _angle = Math.atan2(_y,_x)
+      self.angle = _angle * (180/Math::PI)
+    else
+      self.angle = (tick_count % rotation_speed) * rotation
+    end
   end
 
   def near_enemy_max_multiplier

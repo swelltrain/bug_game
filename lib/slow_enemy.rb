@@ -19,6 +19,8 @@ class SlowEnemySprite < BaseEnemySprite
     @rotation_speed = 360
     @register_collision = 0
     @lunging = 0
+    @avoidence_circle = [20, 40, 80, 200].sample
+    @lunging_circle = [80, 120].sample
   end
 
   def set_angle(tick_count, player)
