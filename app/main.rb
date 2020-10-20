@@ -24,7 +24,7 @@ def tick(args)
 
   if args.tick_count >= args.state.next_food
     args.state.food = FoodieSprite.new(args)
-    args.state.next_food += [400,600,800,1200].sample
+    args.state.next_food += [400,600,800,1200,1200,2400].sample
     # args.state.next_food += [400,1000].sample + args.tick_count
     args.outputs.sounds << "sounds/powerup.wav"
   end
@@ -98,6 +98,8 @@ def tick(args)
     g:              255,
     b:              255,
   }
+  args.state.player.decrement_hit
+
   if (player_collission && args.state.player.attitude == "run")
     initial = args.state.enemies.count
     args.state.enemies.reject! { |e| e == player_collission }
@@ -107,6 +109,7 @@ def tick(args)
 
     args.state.player.speed_xy = (player_collission.speed_xy / 2)
     args.state.player.speed_up_down = (player_collission.speed_up_down / 2)
+    args.state.player.hit = 30
 
     args.state.player.decrement_health(10)
   end

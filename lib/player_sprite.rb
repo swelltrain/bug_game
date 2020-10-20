@@ -1,6 +1,7 @@
 class Player
   attr_sprite
-  attr_accessor :speed_xy, :speed_up_down, :previous_key_xy, :previous_key_up_down
+  attr_accessor :speed_xy, :speed_up_down,
+    :previous_key_xy, :previous_key_up_down, :hit
   attr_accessor :x, :y, :w, :h, :attitude, :r, :g, :b, :a, :path, :attack_for, :health
 
   def initialize(outputs)
@@ -22,6 +23,7 @@ class Player
     @attack_for = 0
     @mute_running_out_of_attack = false
     @health = 100
+    @hit = 0
     outputs.static_sprites << self
   end
 
@@ -37,7 +39,15 @@ class Player
     serialize.to_s
   end
 
+  def decrement_hit
+    return if @hit == 0
+
+    @hit -= 1
+  end
+
   def calculate_speed(key_held)
+    # return if @hit > 0
+
     if key_held.right
       @speed_xy += 0.7 unless @speed_xy > 6
       @previous_key_xy = "right"
