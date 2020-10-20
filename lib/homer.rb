@@ -1,9 +1,8 @@
-class Player
+class Homer
   attr_sprite
   attr_accessor :speed_xy, :speed_up_down,
     :previous_key_xy, :previous_key_up_down, :hit
-  attr_accessor :x, :y, :w, :h, :attitude,
-    :r, :g, :b, :a, :path, :attack_for, :health, :has_homer
+  attr_accessor :x, :y, :w, :h, :attitude, :r, :g, :b, :a, :path, :attack_for, :health
 
   def initialize(outputs)
     @x = [100,300,500,700,900,1100].sample
@@ -25,7 +24,6 @@ class Player
     @mute_running_out_of_attack = false
     @health = 100
     @hit = 0
-    @has_homer = false
     outputs.static_sprites << self
   end
 

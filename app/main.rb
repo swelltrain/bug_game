@@ -4,6 +4,7 @@ require "lib/enemy_sprite.rb"
 require "lib/slow_enemy.rb"
 require "lib/foodie_sprite.rb"
 require "lib/chasing_enemy_sprite.rb"
+require "lib/star_sprite.rb"
 
 def tick(args)
   args.outputs.sounds << "sounds/background.wav" if args.tick_count == 0
@@ -43,6 +44,11 @@ def tick(args)
     # args.outputs.sounds << "sounds/background.wav"
   end
 
+  if args.tick_count >= args.state.next_homer && args.state.homer_available
+    args.state.star = StarSprite.new(args)
+    args.state.homer_available = false
+  end
+
   calculate_sprite_speeds(args)
   args.state.enemies.each do |enemy|
     if enemy.near_player?(args.state.player)
@@ -73,6 +79,15 @@ def tick(args)
       args.state.player.increment_health(10)
       args.state.score += 50
       args.outputs.sounds << "sounds/eat_power_up.wav"
+    end
+  end
+
+  if args.state.star
+    args.outputs.sprites << args.state.star
+    if args.state.player.rect.intersect_rect?(args.state.star.rect)
+      args.state.star = nil
+      args.state.homer_available = true
+      puts "okay okay"
     end
   end
 
@@ -122,7 +137,10 @@ def setup_game(args)
   args.state.reset_count ||= 0
   args.state.next_enemy ||= 1000
   args.state.next_food ||= 400
+  args.state.next_homer ||= 400
+  args.state.homer_available = true
   args.state.food ||= false
+  args.state.star ||= false
   args.state.score ||= 0
   args.state.total_enemies ||= 20
   args.state.high_score ||= 0
@@ -151,14 +169,17 @@ def reset(args)
   args.state.player = nil
   args.state.enemies = nil
   args.state.food = nil
+  args.state.star = nil
   args.state.total_enemies = 20
   # args.state.next_food = nil
   screams = %w[scream1.wav]
   args.outputs.sounds << "sounds/#{screams.sample}"
   args.state.high_score = args.state.score if args.state.score > args.state.high_score
   args.state.score = 0
+  args.state.homer_available = true
   args.state.reset_count = args.tick_count + 180
   args.state.next_enemy = args.tick_count + 1000
+  args.state.next_homer ||= args.tick_count + 1000
 end
 
 def check_player_collission(args)
