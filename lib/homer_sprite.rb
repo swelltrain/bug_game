@@ -18,8 +18,8 @@ class Homer
     @previous_key_up_down = ["up", "down"].sample
     @speed_xy = 1
     @speed_up_down = 1
-    @path = 'sprites/buggy.png'
-    @attitude = "run"
+    @path = 'sprites/sssss.png'
+    @attitude = "attack"
     @attack_for = 0
     @mute_running_out_of_attack = false
     @health = 100

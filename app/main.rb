@@ -5,9 +5,13 @@ require "lib/slow_enemy.rb"
 require "lib/foodie_sprite.rb"
 require "lib/chasing_enemy_sprite.rb"
 require "lib/star_sprite.rb"
+require "lib/homer_sprite.rb"
 
 def tick(args)
-  args.outputs.sounds << "sounds/background.wav" if args.tick_count == 0
+  if args.tick_count == 0
+    args.outputs.sounds << "sounds/background.wav"
+    args.state.homer_available = true
+  end
 
   return if args.state.reset_count >= args.tick_count
 
@@ -45,6 +49,7 @@ def tick(args)
   end
 
   if args.tick_count >= args.state.next_homer && args.state.homer_available
+    puts "homer avail #{args.state.homer_available}"
     args.state.star = StarSprite.new(args)
     args.state.homer_available = false
   end
@@ -52,7 +57,7 @@ def tick(args)
   calculate_sprite_speeds(args)
   args.state.enemies.each do |enemy|
     if enemy.near_player?(args.state.player)
-      enemy.lunging = 2
+      enemy.lunging = 3
     else
       enemy.lunging = 0
     end
@@ -85,9 +90,10 @@ def tick(args)
   if args.state.star
     args.outputs.sprites << args.state.star
     if args.state.player.rect.intersect_rect?(args.state.star.rect)
-      args.state.star = nil
+      # emit a homer sprite with x and y of player x and y
+      # args.state.star = nil
+      args.state.score += 50
       args.state.homer_available = true
-      puts "okay okay"
     end
   end
 
@@ -121,9 +127,10 @@ def tick(args)
     args.outputs.sounds << "sounds/glass_break.wav"
     args.state.total_enemies -= (initial - args.state.enemies.count)
 
-
-    args.state.player.speed_xy = (player_collission.speed_xy / 2)
-    args.state.player.speed_up_down = (player_collission.speed_up_down / 2)
+    args.state.player.previous_key_xy = player_collission.previous_key_xy
+    args.state.player.previous_key_up_down = player_collission.previous_key_up_down
+    args.state.player.speed_xy = (player_collission.speed_xy * 1.2)
+    args.state.player.speed_up_down = (player_collission.speed_up_down * 1.2)
     args.state.player.hit = 30
 
     args.state.player.decrement_health(10)
@@ -138,7 +145,7 @@ def setup_game(args)
   args.state.next_enemy ||= 1000
   args.state.next_food ||= 400
   args.state.next_homer ||= 400
-  args.state.homer_available = true
+  # args.state.homer_available = true
   args.state.food ||= false
   args.state.star ||= false
   args.state.score ||= 0

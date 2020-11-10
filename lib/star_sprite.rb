@@ -1,6 +1,7 @@
 class StarSprite
   attr_sprite
-  attr_accessor :speed_xy, :speed_up_down, :previous_key_xy, :previous_key_up_down
+  attr_accessor :speed_xy, :speed_up_down,
+    :previous_key_xy, :previous_key_up_down
   attr_accessor :x, :y, :w, :h, :angle
   attr_accessor :movement_probability, :rotation, :rotation_speed, :register_collision
 

@@ -47,20 +47,28 @@ class Player
     @hit -= 1
   end
 
+  def max_speed_xy
+    @attitude == "run" ? 4 : 5
+  end
+
+  def max_speed_up_down
+    @attitude == "run" ? 3 : 4
+  end
+
   def calculate_speed(key_held)
     # return if @hit > 0
 
-    if key_held.right
-      @speed_xy += 0.7 unless @speed_xy > 6
+    if key_held.right || key_held.l
+      @speed_xy += 0.7 unless @speed_xy > max_speed_xy
       @previous_key_xy = "right"
-    elsif key_held.left
-      @speed_xy -= 0.7 unless (@speed_xy * -1) > 6
+    elsif key_held.left || key_held.j
+      @speed_xy -= 0.7 unless (@speed_xy * -1) > max_speed_xy
       @previous_key_xy = "left"
-    elsif key_held.up
-      @speed_up_down += 0.9 unless @speed_up_down > 4
+    elsif key_held.up || key_held.w || key_held.i
+      @speed_up_down += 0.9 unless @speed_up_down > max_speed_up_down
       @previous_key_up_down = "up"
-    elsif key_held.down
-      @speed_up_down -= 0.9 unless (@speed_up_down * -1) > 4
+    elsif key_held.down || key_held.s || key_held.k
+      @speed_up_down -= 0.9 unless (@speed_up_down * -1) > max_speed_up_down
       @previous_key_up_down = "down"
     end
   end
